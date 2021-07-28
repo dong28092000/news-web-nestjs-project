@@ -10,15 +10,30 @@ import { Repository } from 'typeorm';
 import { RegisterRequest } from '../authentication/dto/register.request.dto';
 import { User } from './user.entity';
 
-
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-    ) {}
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-    async create(data: RegisterRequest): Promise<User> {
-        return this.userRepository.save(data);
-    }
+  async create(data: RegisterRequest): Promise<User> {
+    const user = await this.userRepository.create(data);
+    return this.userRepository.save(user);
+  }
+
+  async findOne(condition): Promise<User> {   
+   return this.userRepository.findOne({email: condition.email});
+  }
+
+  async setCurrentRefreshToken(
+    currentHashedRefreshToken: string,
+    userId: number,
+  ): Promise<boolean> {
+    await this.userRepository.update(userId, {
+      currentHashedRefreshToken,
+    });
+
+    return true;
+  }
 }
