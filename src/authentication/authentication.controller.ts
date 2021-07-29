@@ -1,5 +1,4 @@
 import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
 import { LoginResponse, RegisterResponse } from './authentication.interface';
 import { AuthenticationService } from './authentication.service';
 import { RegisterRequest, LoginRequest } from './dto';
@@ -14,7 +13,7 @@ export class AuthenticationController {
   }
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  async loginManager(@Req() request) {
+  async loginManager(@Req() request): Promise<LoginResponse> {
     const { user } = request;
     const accessToken = this.authenticationService.generateJwtAccessToken(
       user.id,
@@ -27,8 +26,8 @@ export class AuthenticationController {
       user.id,
     );
     return {
-      accessToken,
-      refreshToken,
+      access_token: accessToken,
+      refresh_token: refreshToken,
     };
   }
 }
