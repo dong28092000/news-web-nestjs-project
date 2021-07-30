@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { Posts } from './post/post.entity';
+import { PostModule } from './post/post.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 
@@ -12,7 +14,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      entities: [User],
+      entities: [User, Posts],
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME || '',
@@ -20,7 +22,9 @@ import { UserModule } from './user/user.module';
       database: process.env.DATABASE_NAME,
       synchronize: true,
     }),
-    UserModule, AuthenticationModule,
+    UserModule,
+    AuthenticationModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
