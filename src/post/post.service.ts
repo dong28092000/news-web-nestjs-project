@@ -23,7 +23,7 @@ export class PostService {
     };
   }
 
-  findOne(id, options = {}): Promise<Posts> {
+  findOne(id, options = { relations: ['comments'] }): Promise<Posts> { 
     return this.postRepository.findOne(id, options);
   }
 
