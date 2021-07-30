@@ -1,10 +1,18 @@
-import { Controller, Post, Body, Get, Param, NotFoundException, Patch } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { CreatePostResponse } from './post.interface';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  NotFoundException,
+  Patch,
+  Query,
+} from '@nestjs/common';
+import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { PostService } from './post.service';
 import { Posts } from './post.entity';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdateResult } from 'typeorm';
+import { CreatePostDto, UpdatePostDto, SearchPostDto } from './dto';
 
 @Controller('posts')
 export class PostController {
@@ -20,14 +28,19 @@ export class PostController {
   }
 
   @Patch(':id')
-  async editPosts(@Param() id, @Body() body: UpdatePostDto): Promise<UpdateResult> {
+  async editPosts(
+    @Param() id,
+    @Body() body: UpdatePostDto,
+  ): Promise<UpdateResult> {
     const postExits = this.postService.findOne(id);
-    if(!postExits) {
-        throw new NotFoundException('this post with id does not exit');
+    if (!postExits) {
+      throw new NotFoundException('this post with id does not exit');
     }
     return this.postService.updatePost(id, body);
   }
 
-  @Post()
-  async seachPost(): 
+  @Get()
+  async seachPost(@Query() searchPost: SearchPostDto): Promise<SearchPostResponse> {
+    return this.postService.searchPost(searchPost);
+  }
 }
