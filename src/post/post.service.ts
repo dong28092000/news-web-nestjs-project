@@ -7,17 +7,24 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Posts } from './post.entity';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Posts)
     private readonly postRepository: Repository<Posts>,
+    private readonly tagService: TagService,
   ) {}
 
-  async createPost(user: User, body: CreatePostDto): Promise<CreatePostResponse> {
+  async createPost(user: User, body: CreatePostDto, tagId: number): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
     post.userId = user.id;
+    console.log(post)
+    console.log(tagId);
+    const tag = await this.tagService.findOneOrFail({id: tagId});
+    console.log(tag)
+    post.tags = [tag];
     await this.postRepository.save(post);
     return {
       id: post.id,
@@ -25,7 +32,7 @@ export class PostService {
     };
   }
 
-  findOne(id, options = { relations: ['comments', 'user'] }): Promise<Posts> { 
+  findOne(id, options = { relations: ['comments', 'user', 'tags'] }): Promise<Posts> { 
     return this.postRepository.findOne(id, options);
   }
 

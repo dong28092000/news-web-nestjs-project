@@ -10,13 +10,15 @@ import { PostModule } from './post/post.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { Comment } from './comment/comment.entity';
+import { TagModule } from './tag/tag.module';
+import { Tag } from './tag/tag.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      entities: [User, Posts, Comment],
+      entities: [User, Posts, Comment, Tag],
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME || '',
@@ -28,6 +30,7 @@ import { Comment } from './comment/comment.entity';
     AuthenticationModule,
     PostModule,
     CommentModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

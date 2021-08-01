@@ -25,8 +25,9 @@ export class PostController {
   async createPost(
     @Req() { user },
     @Body() body: CreatePostDto,
+    @Query() tagId: number,
   ): Promise<CreatePostResponse> {
-    return this.postService.createPost(user,body);
+    return this.postService.createPost(user, body, tagId);
   }
 
   @Get(':id')
