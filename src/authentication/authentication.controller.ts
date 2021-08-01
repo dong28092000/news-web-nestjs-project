@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
-import { LoginResponse, RegisterResponse } from './authentication.interface';
+import { RegisterResponse } from './authentication.interface';
 import { AuthenticationService } from './authentication.service';
 import { RegisterRequest, LoginRequest } from './dto';
 import { LocalAuthenticationGuard } from './local.guard';
@@ -13,21 +13,23 @@ export class AuthenticationController {
   }
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  async loginManager(@Req() request): Promise<LoginResponse> {
+  async loginManager(@Req() request) {
     const { user } = request;
-    const accessToken = this.authenticationService.generateJwtAccessToken(
-      user.id,
-    );
-    const refreshToken = this.authenticationService.generateJwtRefreshToken(
-      user.id,
-    );
+    const accessTokenCookies =
+      this.authenticationService.getCookiesWithJwtAccessToken(user.id);
+
+    const refreshTokenCookies =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.id);
+
     await this.authenticationService.setCurrentRefreshToken(
-      refreshToken,
+      refreshTokenCookies.token,
       user.id,
     );
-    return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    };
+
+    request.res.setHeader('Set-Cookie', [
+      accessTokenCookies,
+      refreshTokenCookies.cookie,
+    ]);
+    return user;
   }
 }
