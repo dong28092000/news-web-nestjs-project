@@ -7,19 +7,26 @@ import {
   NotFoundException,
   Patch,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { PostService } from './post.service';
 import { Posts } from './post.entity';
 import { UpdateResult } from 'typeorm';
 import { CreatePostDto, UpdatePostDto, SearchPostDto } from './dto';
+import { JwtAuthenticationGuard } from '../authentication/jwt.guard';
 
 @Controller('posts')
+@UseGuards(JwtAuthenticationGuard)
 export class PostController {
   constructor(private readonly postService: PostService) {}
   @Post()
-  async createPost(@Body() body: CreatePostDto): Promise<CreatePostResponse> {
-    return this.postService.createPost(body);
+  async createPost(
+    @Req() { user },
+    @Body() body: CreatePostDto,
+  ): Promise<CreatePostResponse> {
+    return this.postService.createPost(user,body);
   }
 
   @Get(':id')
@@ -40,7 +47,9 @@ export class PostController {
   }
 
   @Get()
-  async seachPost(@Query() searchPost: SearchPostDto): Promise<SearchPostResponse> {
+  async seachPost(
+    @Query() searchPost: SearchPostDto,
+  ): Promise<SearchPostResponse> {
     return this.postService.searchPost(searchPost);
   }
 }

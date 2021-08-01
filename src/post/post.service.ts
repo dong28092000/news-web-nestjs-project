@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/user.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { SearchPostDto } from './dto';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -14,8 +15,9 @@ export class PostService {
     private readonly postRepository: Repository<Posts>,
   ) {}
 
-  async createPost(body: CreatePostDto): Promise<CreatePostResponse> {
+  async createPost(user: User, body: CreatePostDto): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
+    post.userId = user.id;
     await this.postRepository.save(post);
     return {
       id: post.id,
@@ -23,7 +25,7 @@ export class PostService {
     };
   }
 
-  findOne(id, options = {}): Promise<Posts> {
+  findOne(id, options = { relations: ['comments', 'user'] }): Promise<Posts> { 
     return this.postRepository.findOne(id, options);
   }
 

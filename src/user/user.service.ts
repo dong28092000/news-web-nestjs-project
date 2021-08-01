@@ -1,5 +1,5 @@
 import {
-  Injectable,
+  Injectable, NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,6 +22,10 @@ export class UserService {
    return this.userRepository.findOne({email: condition.email});
   }
 
+  async findOneOrFail(condition): Promise<User> {
+    return this.userRepository.findOneOrFail(condition);
+  }
+
   async setCurrentRefreshToken(
     currentHashedRefreshToken: string,
     userId: number,
@@ -31,5 +35,13 @@ export class UserService {
     });
 
     return true;
+  }
+
+  async getById(id: number) {
+    const user = await this.userRepository.findOne({ id });
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException('user does not exit!');
   }
 }
