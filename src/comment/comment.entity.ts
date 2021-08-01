@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
-  ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -16,12 +16,15 @@ export class Comment {
   @Column()
   content: string;
 
+  @Column()   
+  postId: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToMany(() => Posts, post => post.comments)
-  posts: Posts[];  
+  @ManyToOne(() => Posts, post => post.comments)
+  post: Posts;  
 }
