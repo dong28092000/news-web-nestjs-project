@@ -11,3 +11,7 @@ export interface LoginResponse {
 export interface TokenPayload {
     userId: number;
 }
+
+export interface ForgotPasswordResponse {
+    url: string;
+  }

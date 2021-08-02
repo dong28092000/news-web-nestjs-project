@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
-import { RegisterResponse } from './authentication.interface';
+import { ForgotPasswordResponse, RegisterResponse } from './authentication.interface';
 import { AuthenticationService } from './authentication.service';
-import { RegisterRequest, LoginRequest } from './dto';
+import { RegisterRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from './dto';
 import { LocalAuthenticationGuard } from './local.guard';
 @Controller('authentication')
 export class AuthenticationController {
@@ -31,5 +31,20 @@ export class AuthenticationController {
       refreshTokenCookies.cookie,
     ]);
     return user;
+  }
+
+  @Post('forgot-password')
+  forgotPasswordManager(
+    @Body() body: ForgotPasswordRequest,
+  ): Promise<ForgotPasswordResponse> {
+    console.log(body)
+    return this.authenticationService.forgotPassword(body);
+  }
+
+  @Post('verify-forgot-password')
+  verifyForgotPasswordManager(
+    @Body() body: ResetPasswordRequest,
+  ): Promise<boolean> {
+    return this.authenticationService.verifyForgotPassword(body);
   }
 }

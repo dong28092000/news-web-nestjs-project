@@ -1,25 +1,29 @@
 import {
   Injectable,
   NotFoundException,
-  HttpException,
-  HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import {
   RegisterResponse,
-  LoginResponse,
   TokenPayload,
+  ForgotPasswordResponse,
 } from './authentication.interface';
 import * as bcrypt from 'bcrypt';
-import { LoginRequest, RegisterRequest } from './dto';
+import { LoginRequest, RegisterRequest, ResetPasswordRequest } from './dto';
 import { JwtService } from '@nestjs/jwt';
+import { OtpService } from '../common/otp.service';
+import { EncryptionService } from '../common/encryption.service';
+import { EmailService } from '../common/email.service';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly otpService: OtpService,
+    private readonly encryptionService: EncryptionService,
+    private readonly emailService: EmailService,
   ) {}
 
   async register(body: RegisterRequest): Promise<RegisterResponse> {
@@ -81,5 +85,44 @@ export class AuthenticationService {
       throw new BadRequestException('Wrong password!');
     }
     return user;
+  }
+
+  async forgotPassword({ email }): Promise<ForgotPasswordResponse> {
+    const user = await this.userService.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('Cannot found email');
+    }
+    const forgotPasswordToken = await this.otpService.createForgotPasswordToken();
+    const data = `${email}-${forgotPasswordToken}`;
+    const encryptData = this.encryptionService.encryptAES(data);
+    const url = `${process.env.FRONT_END_URL}/verify-forgot-password/?token=${encryptData}`;
+    const parameterEmails = {
+      to: [email.toLowerCase()],
+      subject: `Request reset password`,
+      html: `<a href="${url}">Click here</a> for reset password` ,
+    };
+    await this.emailService.sendEmail(parameterEmails);
+
+    return { url };
+  }
+
+  async verifyForgotPassword(body: ResetPasswordRequest): Promise<boolean> {
+    const decryptedToken = this.encryptionService.decryptAES(body.token);
+    const [email, forgotPasswordToken] = decryptedToken.split('-');
+    const user = await this.userService.findOneOrFail({ email });
+    if (!user) {
+      throw new NotFoundException('Cannot found email');
+    }
+    const check = await this.otpService.verifyForgotPasswordToken(
+      forgotPasswordToken,
+    );
+    if (!check) {
+      throw new BadRequestException('Invalid token');
+    }
+    const newHashedPassword = await bcrypt.hash(body.password, 10);
+
+    await this.userService.resetPassword(user.id, newHashedPassword);
+
+    return true;
   }
 }

@@ -2,7 +2,7 @@ import {
   Injectable, NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { RegisterRequest } from '../authentication/dto/register.request.dto';
 import { User } from './user.entity';
 
@@ -43,5 +43,9 @@ export class UserService {
       return user;
     }
     throw new NotFoundException('user does not exit!');
+  }
+
+  resetPassword(id: number, newHashedPassword: string): Promise<UpdateResult> {
+    return this.userRepository.update(id, { password: newHashedPassword });
   }
 }
