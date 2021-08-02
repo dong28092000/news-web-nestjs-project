@@ -1,3 +1,4 @@
+import { Tag } from 'src/tag/tag.entity';
 import { User } from 'src/user/user.entity';
 import {
   Entity,
@@ -5,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Comment } from '../comment/comment.entity';
 
@@ -19,13 +22,16 @@ export class Posts {
   @Column()
   content: string;
 
-  @Column({default: null})
+  @Column({ default: null })
   userId: number;
-
 
   @OneToMany(() => Comment, (comment: Comment) => comment.post)
   comments: Comment[];
 
   @ManyToOne(() => User, (user: User) => user.posts)
   user: User;
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags: Tag[];
 }

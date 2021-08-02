@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { PostService } from './post.service';
@@ -25,8 +26,9 @@ export class PostController {
   async createPost(
     @Req() { user },
     @Body() body: CreatePostDto,
+    @Query() data,
   ): Promise<CreatePostResponse> {
-    return this.postService.createPost(user,body);
+    return this.postService.createPost(user, body, data);
   }
 
   @Get(':id')
@@ -38,12 +40,9 @@ export class PostController {
   async editPosts(
     @Param() id,
     @Body() body: UpdatePostDto,
-  ): Promise<UpdateResult> {
-    const postExits = this.postService.findOne(id);
-    if (!postExits) {
-      throw new NotFoundException('this post with id does not exit');
-    }
-    return this.postService.updatePost(id, body);
+    @Query() data,
+  ): Promise<Posts>{
+    return this.postService.updatePost(id, body, data);
   }
 
   @Get()
