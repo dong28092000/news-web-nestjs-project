@@ -11,7 +11,7 @@ export class UserController {
         private readonly userService: UserService,
     ){}
 
-    @Get(':id')
+    @Get()
     async getProfile(@Req() { user }): Promise<User> {
         return this.userService.findOneOrFail(user.id);
     }

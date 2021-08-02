@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Param, Post, UseGuards } from "@nestjs/common";
-import { DeleteResult } from "typeorm";
+import { Body, Controller, Delete, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { DeleteResult, UpdateResult } from "typeorm";
 import { JwtAuthenticationGuard } from "../authentication/jwt.guard";
 import { CreateTagDto } from "./dto/create-tag.dto";
 import { Tag } from "./tag.entity";
+import { UpdateTagDto } from "./tag.interface";
 import { TagService } from "./tag.service";
 
 
@@ -21,5 +22,10 @@ export class TagController {
     @Delete(':id')
     async deleteTag(@Param() id: number): Promise<DeleteResult> {
         return this.tagService.delete(id);
+    }
+
+    @Patch(':id')
+    async updateTag(@Param() id, @Body() body: UpdateTagDto): Promise<UpdateResult> {
+        return this.tagService.update(id, body);
     }
 }

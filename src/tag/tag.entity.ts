@@ -10,7 +10,7 @@ import {
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   name: string;

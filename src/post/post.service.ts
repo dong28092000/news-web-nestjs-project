@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Repository, UpdateResult } from 'typeorm';
@@ -17,13 +17,14 @@ export class PostService {
     private readonly tagService: TagService,
   ) {}
 
-  async createPost(user: User, body: CreatePostDto, tagId: number): Promise<CreatePostResponse> {
+  async createPost(
+    user: User,
+    body: CreatePostDto,
+    data,
+  ): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
     post.userId = user.id;
-    console.log(post)
-    console.log(tagId);
-    const tag = await this.tagService.findOneOrFail({id: tagId});
-    console.log(tag)
+    const tag = await this.tagService.getOne({ id: data.tagId });
     post.tags = [tag];
     await this.postRepository.save(post);
     return {
@@ -32,17 +33,39 @@ export class PostService {
     };
   }
 
-  findOne(id, options = { relations: ['comments', 'user', 'tags'] }): Promise<Posts> { 
+  findOne(
+    id,
+    options = { relations: ['comments', 'user', 'tags'] },
+  ): Promise<Posts> {
     return this.postRepository.findOne(id, options);
   }
 
-  updatePost(id: number, body: UpdatePostDto): Promise<UpdateResult> {
-    const postUpdate = new Posts();
+  async updatePost(
+    id: number,
+    body: UpdatePostDto,
+    data,
+  ): Promise<Posts> {
+    const postExits = await this.postRepository.findOne(id, { relations: ['tags']});
+    if (!postExits) {
+      throw new NotFoundException('this post with id does not exit');
+    }
 
-    if (body.title) postUpdate.title = body.title;
-    if (body.content) postUpdate.content = body.content;
+    const isTagExit = postExits.tags.find((x) => x.id == data.tagId);
+    if (isTagExit) {
+      throw new BadRequestException('this tag is add to the post');
+    }
 
-    return this.postRepository.update(id, postUpdate);
+    if (body.title) postExits.title = body.title;
+    if (body.content) postExits.content = body.content;
+
+    const tag = await this.tagService.getOne({ id: data.tagId });
+    if (!tag) {
+      throw new NotFoundException('this tag is not exit');
+    }
+
+    postExits.tags.push(tag);
+   
+    return this.postRepository.save(postExits);
   }
 
   async searchPost(searchPost: SearchPostDto): Promise<SearchPostResponse> {
