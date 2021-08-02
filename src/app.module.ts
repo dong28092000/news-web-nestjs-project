@@ -12,13 +12,17 @@ import { UserModule } from './user/user.module';
 import { Comment } from './comment/comment.entity';
 import { TagModule } from './tag/tag.module';
 import { Tag } from './tag/tag.entity';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
+import { Permission } from './permission/permission.entity';
+import { Role } from './role/role.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      entities: [User, Posts, Comment, Tag],
+      entities: [User, Posts, Comment, Tag, Role, Permission],
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME || '',
@@ -31,6 +35,8 @@ import { Tag } from './tag/tag.entity';
     PostModule,
     CommentModule,
     TagModule,
+    RoleModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

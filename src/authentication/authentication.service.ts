@@ -12,9 +12,9 @@ import {
 import * as bcrypt from 'bcrypt';
 import { LoginRequest, RegisterRequest, ResetPasswordRequest } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { OtpService } from '../common/otp.service';
-import { EncryptionService } from '../common/encryption.service';
-import { EmailService } from '../common/email.service';
+import { OtpService } from '../common/services/otp.service';
+import { EncryptionService } from '../common/services/encryption.service';
+import { EmailService } from '../common/services/email.service';
 
 @Injectable()
 export class AuthenticationService {

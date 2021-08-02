@@ -6,9 +6,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
-import { EmailModule } from '../common/email.module';
-import { OtpModule } from '../common/otp.module';
-import { EncryptionModule } from '../common/encryption.module';
+import { EmailModule } from '../common/services/email.module';
+import { OtpModule } from '../common/services/otp.module';
+import { EncryptionModule } from '../common/services/encryption.module';
 
 @Module({
   imports: [
