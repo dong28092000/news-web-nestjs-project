@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Posts } from '../post/post.entity';
 import { Role } from '../role/role.entity';
@@ -30,5 +30,6 @@ export class User {
   posts: Posts[];
 
   @ManyToMany(() => Role)
+  @JoinTable()
   roles: Role[];
 }

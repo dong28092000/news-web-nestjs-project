@@ -23,7 +23,6 @@ export class Role {
   updateAtDate: Date;
 
   @ManyToMany(() => User)
-  @JoinTable()
   users: User[];
 
   @ManyToMany(() => Permission)

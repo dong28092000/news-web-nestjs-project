@@ -14,7 +14,10 @@ import {
   import { Role } from './role.entity';
   import { RoleCreateDto, RoleUpdateDto } from './dto/index';
   import { DeleteResult } from 'typeorm';
-  
+  import { Permission } from '../common/decorator';
+  import { CREATE_ROLE, UPDATE_ROLE, DELETE_ROLE } from '../common/constant';
+  import { PermissionGuard } from '../authentication/permission.guard';
+
   @Controller('roles')
   @UseGuards(JwtAuthenticationGuard)
   export class RoleController {
@@ -26,11 +29,15 @@ import {
     }
   
     @Post()
+    @Permission(CREATE_ROLE)
+    @UseGuards(PermissionGuard)
     async createRole(@Body() roleCreate: RoleCreateDto): Promise<Role> {
       return this.roleService.createRole(roleCreate);
     }
   
     @Put(':id')
+    @Permission(UPDATE_ROLE)
+    @UseGuards(PermissionGuard)
     async updateRole(
       @Param('id') id,
       @Body() roleUpdate: RoleUpdateDto,
@@ -39,7 +46,7 @@ import {
       if (!exitsRole) {
         throw new NotFoundException('Cannot found role!');
       }
-      roleUpdate.id = +id;
+      roleUpdate.id = +id;                                  // convert string to number
       return this.roleService.updateRole(roleUpdate);
     }
   
@@ -49,6 +56,8 @@ import {
     }
   
     @Delete(':id')
+    @Permission(DELETE_ROLE)
+    @UseGuards(PermissionGuard)
     deleteRole(@Param('id') id): Promise<DeleteResult> {
       return this.roleService.deleteRole(id);
     }
