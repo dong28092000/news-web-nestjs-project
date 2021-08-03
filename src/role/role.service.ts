@@ -47,9 +47,7 @@ import {
     }
   
     async deleteRole(id): Promise<DeleteResult> {
-      const role = await this.findOne(id, { relations: ['users'] });
-      if (role.users.length > 0)
-        throw new BadRequestException('Role assigned to some user');
+      const role = await this.findOne(id);
       return this.roleRepository.delete(id);
     }
   }
