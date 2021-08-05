@@ -13,18 +13,14 @@ export class PermissionGuard implements CanActivate {
       'permission',
       context.getHandler(),
     );
-    console.log(permissionAccept)
     const request = context.switchToHttp().getRequest();
     const userId = request.user.id;
-    console.log(userId)
     const userInformation = await this.userService.findOneOrFail(userId);
-    console.log(userInformation) 
     let permissionAssigned = [];
     userInformation.roles.forEach(
       (role) =>
         (permissionAssigned = permissionAssigned.concat(role.permissions)),       // loi mang lai voi nhau
     );
-    console.log(userInformation.roles)
     return permissionAssigned.some(
       (permission) => permission.id === permissionAccept,                     // check neu dung thi return true
     );

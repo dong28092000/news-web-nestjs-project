@@ -29,7 +29,11 @@ export class UserService {
     condition,
     options = { relations: ['roles', 'roles.permissions'] },
   ): Promise<User> {
-    return this.userRepository.findOneOrFail(condition, options);
+    const user = await this.userRepository.findOneOrFail(condition, options);
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException('user does not exit!');
   }
 
   async setCurrentRefreshToken(
@@ -43,16 +47,7 @@ export class UserService {
     return true;
   }
 
-  async getById(id: number) {
-    const user = await this.userRepository.findOne({ id });
-    if (user) {
-      return user;
-    }
-    throw new NotFoundException('user does not exit!');
-  }
-
   resetPassword(id: number, newHashedPassword: string): Promise<UpdateResult> {
     return this.userRepository.update(id, { password: newHashedPassword });
   }
-
 }
