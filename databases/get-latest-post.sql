@@ -1,8 +1,7 @@
-SELECT posts.*, group_concat(tag.name) as tags
-FROM posts
-INNER JOIN posts_tags_tag
-ON posts_tags_tag.postsId = posts.id
-inner join tag on posts_tags_tag.tagId = tag.id
-group by posts.id
-order by posts.id desc
+select * from posts p
+inner join ( select pt.postsId, group_concat(t.name) as tags
+             from posts_tags_tag pt
+             inner join tag t on pt.tagId = t.id
+             group by pt.postsId ) A On A.postsId = p.id
+order by p.id desc
 limit 0, 10;
