@@ -1,18 +1,42 @@
 import { Controller, Post, Body, Req, UseGuards, Res } from '@nestjs/common';
-import { ForgotPasswordResponse, RegisterResponse } from './authentication.interface';
+import {
+  ForgotPasswordResponse,
+  RegisterResponse,
+} from './authentication.interface';
 import { AuthenticationService } from './authentication.service';
-import { RegisterRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from './dto';
+import {
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  LoginRequest
+} from './dto';
 import { LocalAuthenticationGuard } from './local.guard';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
+
+@ApiBearerAuth()
+@ApiTags('authentication')
 @Controller('authentication')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('register')
+  @ApiCreatedResponse({description: 'success!'})
   registerManager(@Body() body: RegisterRequest): Promise<RegisterResponse> {
     return this.authenticationService.register(body);
   }
+
+
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
+  @ApiBody({ type: LoginRequest })
+  @ApiOkResponse({description: 'success!'})
   async loginManager(@Req() request) {
     const { user } = request;
     const accessTokenCookies =
@@ -34,10 +58,10 @@ export class AuthenticationController {
   }
 
   @Post('forgot-password')
+  @ApiOkResponse({description: 'success!'})
   forgotPasswordManager(
     @Body() body: ForgotPasswordRequest,
   ): Promise<ForgotPasswordResponse> {
-    console.log(body)
     return this.authenticationService.forgotPassword(body);
   }
 
@@ -48,3 +72,5 @@ export class AuthenticationController {
     return this.authenticationService.verifyForgotPassword(body);
   }
 }
+
+

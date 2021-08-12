@@ -8,6 +8,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { Posts } from './post.entity';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { TagService } from '../tag/tag.service';
+import { type } from 'os';
 
 @Injectable()
 export class PostService {
@@ -20,11 +21,11 @@ export class PostService {
   async createPost(
     user: User,
     body: CreatePostDto,
-    data,
+    tagId,
   ): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
     post.userId = user.id;
-    const tag = await this.tagService.getOne({ id: data.tagId });
+    const tag = await this.tagService.getOne({ id: tagId });
     post.tags = [tag];
     await this.postRepository.save(post); 
     return {
@@ -45,24 +46,22 @@ export class PostService {
   }
 
   async updatePost(
-    id: number,
+    id,
     body: UpdatePostDto,
-    data,
+    tagId,
   ): Promise<Posts> {
     const postExits = await this.postRepository.findOne(id, { relations: ['tags']});
     if (!postExits) {
       throw new NotFoundException('this post with id does not exit');
     }
-
-    const isTagExit = postExits.tags.find((x) => x.id == data.tagId);
+    const isTagExit = postExits.tags.find((x) => x.id == tagId);
     if (isTagExit) {
       throw new BadRequestException('this tag is add to the post');
     }
 
     if (body.title) postExits.title = body.title;
     if (body.content) postExits.content = body.content;
-
-    const tag = await this.tagService.getOne({ id: data.tagId });
+    const tag = await this.tagService.getOne({ id: tagId });
     if (!tag) {
       throw new NotFoundException('this tag is not exit');
     }
