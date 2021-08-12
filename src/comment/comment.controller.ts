@@ -4,7 +4,10 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { Comment } from "./comment.entity";
 import { JwtAuthenticationGuard } from "../authentication/jwt.guard";
 import { DeleteResult } from "typeorm";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 
+
+@ApiTags('comments')
 @Controller('comments')
 @UseGuards(JwtAuthenticationGuard)
 export class CommentController {
@@ -18,7 +21,7 @@ export class CommentController {
     }
 
     @Delete(':id')
-    async deleteComment(@Param() id: number): Promise<DeleteResult> {
+    async deleteComment(@Param('id') id: number): Promise<DeleteResult> {
         return this.commentService.delete(id); 
     }
 

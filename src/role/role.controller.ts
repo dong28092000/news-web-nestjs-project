@@ -20,7 +20,10 @@ import { Permission } from '../common/decorator';
 import { CREATE_ROLE, UPDATE_ROLE, DELETE_ROLE } from '../common/constant';
 import { PermissionGuard } from '../authentication/permission.guard';
 import { UserService } from '../user/user.service';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('roles')
 @Controller('roles')
 @UseGuards(JwtAuthenticationGuard)
 export class RoleController {
@@ -30,7 +33,7 @@ export class RoleController {
   ) {}
 
   @Get(':id')
-  async getRole(@Param('id') id): Promise<Role> {
+  async getRole(@Param('id') id: string): Promise<Role> {
     const role = await this.roleService.findOne(id);
     if (!role) {
       throw new NotFoundException('this role does not exit!');
@@ -49,7 +52,7 @@ export class RoleController {
   @Permission(UPDATE_ROLE)
   @UseGuards(PermissionGuard)
   async updateRole(
-    @Param('id') id,
+    @Param('id') id: string,
     @Body() roleUpdate: RoleUpdateDto,
   ): Promise<Role> {
     const exitsRole = await this.roleService.findOne(id);
@@ -63,14 +66,15 @@ export class RoleController {
   @Patch()
   @Permission(UPDATE_ROLE)
   @UseGuards(PermissionGuard)
-  async updateRoleForUser(@Query() data) {
-    const { userId } = data;
-    let { roleId } = data;
+  @ApiQuery({ name: 'userId'})
+  @ApiQuery({ name: 'roleId'})
+  async updateRoleForUser(@Query('userId') userId, @Query('roleId') roleId) {
     roleId = +roleId;
     const isExitUser = await this.userService.findOneOrFail(userId);
     if(!isExitUser) {
       throw new NotFoundException('This user does not exit!');
     }
+    
     const isExitsRole = await this.roleService.findOne(roleId);
     if(!isExitsRole) {
       throw new NotFoundException('this role does not exit!');
@@ -91,7 +95,7 @@ export class RoleController {
   @Delete(':id')
   @Permission(DELETE_ROLE)
   @UseGuards(PermissionGuard)
-  deleteRole(@Param('id') id): Promise<DeleteResult> {
+  deleteRole(@Param('id') id: string): Promise<DeleteResult> {
     return this.roleService.deleteRole(id);
   }
 }
