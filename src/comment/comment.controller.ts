@@ -11,7 +11,7 @@ export class CommentController {
     constructor(
         private readonly commentService: CommentService,
     ){}
-
+    
     @Post()
     async createComment( @Body() comment: CreateCommentDto): Promise<Comment> {
         return this.commentService.create(comment);
@@ -19,7 +19,7 @@ export class CommentController {
 
     @Delete(':id')
     async deleteComment(@Param() id: number): Promise<DeleteResult> {
-        return this.commentService.delete(id);
+        return this.commentService.delete(id); 
     }
 
 }

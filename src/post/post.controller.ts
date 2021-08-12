@@ -36,6 +36,12 @@ export class PostController {
     return this.postService.findOne(id);
   }
 
+  @Get()
+  async getAll(): Promise<Posts[]> {
+    return this.postService.findAllPosts();
+  }
+
+
   @Patch(':id')
   async editPosts(
     @Param() id,

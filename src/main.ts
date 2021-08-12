@@ -7,7 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  //app.useGlobalFilters(new AllExceptionsFilter());
+  app.enableCors({credentials: true});
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(3000);
 }
 bootstrap(); 

@@ -21,6 +21,10 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async updateRole(user: User) {
+    return this.userRepository.save(user);
+  }
+
   async findOne(condition): Promise<User> {
     return this.userRepository.findOne({ email: condition.email });
   }
