@@ -26,7 +26,7 @@ export class PostService {
     post.userId = user.id;
     const tag = await this.tagService.getOne({ id: data.tagId });
     post.tags = [tag];
-    await this.postRepository.save(post);
+    await this.postRepository.save(post); 
     return {
       id: post.id,
       message: 'success',
@@ -38,6 +38,10 @@ export class PostService {
     options = { relations: ['comments', 'user', 'tags'] },
   ): Promise<Posts> {
     return this.postRepository.findOne(id, options);
+  }
+
+  findAllPosts(options = { relations: ['comments', 'user', 'tags'] }): Promise<Posts[]> {
+    return this.postRepository.find(options);
   }
 
   async updatePost(
