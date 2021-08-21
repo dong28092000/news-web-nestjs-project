@@ -1,14 +1,20 @@
-import { BadRequestException, Injectable, NotFoundException, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  Post,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { SearchPostDto } from './dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Posts } from './post.entity';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { TagService } from '../tag/tag.service';
-import { type } from 'os';
+import { getConnection } from 'typeorm';
+import { Comment } from '../comment/comment.entity';
 
 @Injectable()
 export class PostService {
@@ -27,7 +33,7 @@ export class PostService {
     post.userId = user.id;
     const tag = await this.tagService.getOne({ id: tagId });
     post.tags = [tag];
-    await this.postRepository.save(post); 
+    await this.postRepository.save(post);
     return {
       id: post.id,
       message: 'success',
@@ -36,21 +42,21 @@ export class PostService {
 
   findOne(
     id,
-    options = { relations: ['comments', 'user', 'tags'] },
+    options = { relations: ['comments', 'user', 'tags', 'images'] },
   ): Promise<Posts> {
     return this.postRepository.findOne(id, options);
   }
 
-  findAllPosts(options = { relations: ['comments', 'user', 'tags'] }): Promise<Posts[]> {
+  findAllPosts(
+    options = { relations: ['comments', 'user', 'tags', 'images'] },
+  ): Promise<Posts[]> {
     return this.postRepository.find(options);
   }
 
-  async updatePost(
-    id,
-    body: UpdatePostDto,
-    tagId,
-  ): Promise<Posts> {
-    const postExits = await this.postRepository.findOne(id, { relations: ['tags']});
+  async updatePost(id, body: UpdatePostDto, tagId): Promise<Posts> {
+    const postExits = await this.postRepository.findOne(id, {
+      relations: ['tags'],
+    });
     if (!postExits) {
       throw new NotFoundException('this post with id does not exit');
     }
@@ -67,7 +73,7 @@ export class PostService {
     }
 
     postExits.tags.push(tag);
-   
+
     return this.postRepository.save(postExits);
   }
 
@@ -78,5 +84,17 @@ export class PostService {
     return {
       posts: posts,
     };
+  }
+
+  async delete(id): Promise<DeleteResult> {
+    const post = await this.postRepository.findOne(id);
+    if (!post) throw new NotFoundException('this post does not exit!');
+    // const a = await getConnection()
+    //   .createQueryBuilder()
+    //   .delete()
+    //   .from(Comment)
+    //   .where({ postId: id })
+    //   .execute();
+    return this.postRepository.delete(id);
   }
 }
