@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UploadImageDto } from './dto/upload-image.dto';
@@ -13,6 +13,7 @@ export class ImageService {
 
   async create(file, body: UploadImageDto): Promise<Image> {
     const newImage = await this.imageRepository.create(body);
+    newImage.postId = body.postId;
     newImage.imageFile = file.filename;
     newImage.url = `http://localhost:3000/api/images/${newImage.imageFile}`;
     return this.imageRepository.save(newImage);

@@ -8,7 +8,11 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  app.enableCors({credentials: true});
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   app.useGlobalFilters(new AllExceptionsFilter());
   const config = new DocumentBuilder()
     .setTitle('Test API')
@@ -20,4 +24,4 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
   await app.listen(3000);
 }
-bootstrap(); 
+bootstrap();

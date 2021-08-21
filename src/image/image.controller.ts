@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -39,15 +40,18 @@ export class ImageController {
       }),
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: UploadImageDto): Promise<Image> {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: UploadImageDto,
+  ): Promise<Image> {
     const image = await this.imageService.create(file, body);
     return image;
   }
 
   @Get(':imgPath')
-  seeUploadedFile(@Param('imgPath') image, @Res() res) {
-    const isImageExit = this.imageService.getByFileNanme(image);
-    if(!isImageExit) {
+  async seeUploadedFile(@Param('imgPath') image, @Res() res) {
+    const isImageExit = await this.imageService.getByFileNanme(image);
+    if (!isImageExit) {
       throw new NotFoundException('this image does not exit!');
     }
     return res.sendFile(image, { root: './src/image/image-upload' });

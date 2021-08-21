@@ -10,18 +10,15 @@ import {
   UseGuards,
   Req,
   BadRequestException,
+  Delete,
 } from '@nestjs/common';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { PostService } from './post.service';
 import { Posts } from './post.entity';
-import { UpdateResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreatePostDto, UpdatePostDto, SearchPostDto } from './dto';
 import { JwtAuthenticationGuard } from '../authentication/jwt.guard';
 import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -68,5 +65,10 @@ export class PostController {
     @Query('title') searchPost: SearchPostDto,
   ): Promise<SearchPostResponse> {
     return this.postService.searchPost(searchPost);
+  }
+
+  @Delete(':id')
+  async deletePost(@Param('id') id: string): Promise<DeleteResult> {
+    return this.postService.delete(id);
   }
 }

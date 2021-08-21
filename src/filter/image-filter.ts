@@ -3,7 +3,7 @@ import { extname } from 'path';
 
 export const imageFilter = function (req, file, cb) {
   // accept image only
-  if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|JPG)$/)) {
     cb(
       new HttpException(
         `Unsupported file type ${extname(file.originalname)}`,

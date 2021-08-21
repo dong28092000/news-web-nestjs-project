@@ -1,6 +1,9 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UploadImageDto {
   @IsNotEmpty()
-  name: string;
+  postId: number;
+
+  @IsOptional()
+  url: string;
 }

@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstname\": \"haha\",\n    \"lastname\": \"nguyen\",\n    \"email\": \"123@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"raw": "{\n    \"firstname\": \"haha\",\n    \"lastname\": \"nguyen\",\n    \"email\": \"665@gmail.com\",\n    \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"dongnq@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"raw": "{\n    \"email\": \"damn@gmail.com\",\n    \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -73,8 +73,17 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nguyenquangdong28092000@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:3000/api/authentication/login",
+							"raw": "http://localhost:3000/api/authentication/forgot-password",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -83,7 +92,7 @@
 							"path": [
 								"api",
 								"authentication",
-								"login"
+								"forgot-password"
 							]
 						}
 					},
@@ -94,6 +103,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"123456789\",\n    \"token\": \"cca3ee478d6ca2e7de8ec61c97e1b04f-542d528087e1cb07f0692f56cda803af3a043f0adfcecb53989759bca95a61cc4c3e59aa96b3267999c7ecfd68c49514\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/authentication/verify-forgot-password",
 							"protocol": "http",
@@ -122,7 +140,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Ekoios\",\n    \"content\": \"you are hired!\"\n}",
+							"raw": "{\n    \"title\": \"Thòi tiết\",\n    \"content\": \"Hôm nay trời nóng\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -130,7 +148,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/posts",
+							"raw": "http://localhost:3000/api/posts?tagId=8",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -139,6 +157,12 @@
 							"path": [
 								"api",
 								"posts"
+							],
+							"query": [
+								{
+									"key": "tagId",
+									"value": "8"
+								}
 							]
 						}
 					},
@@ -150,7 +174,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/posts/1",
+							"raw": "http://localhost:3000/api/posts/202",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -159,7 +183,7 @@
 							"path": [
 								"api",
 								"posts",
-								"1"
+								"202"
 							]
 						}
 					},
@@ -200,7 +224,65 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": "http://localhost:3000/api/posts?title=DSK",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"posts"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "DSK"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete post",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/posts/128",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"posts",
+								"128"
+							]
+						}
 					},
 					"response": []
 				}
@@ -214,15 +296,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "New Request",
-					"request": {
-						"method": "DELETE",
-						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"postId\": 112,\n    \"content\": \"Em da tung quen di tinh dau\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/comments",
 							"protocol": "http",
@@ -233,6 +315,27 @@
 							"path": [
 								"api",
 								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/comments/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"comments",
+								"9"
 							]
 						}
 					},
@@ -248,7 +351,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": "http://localhost:3000/api/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"profile"
+							]
+						}
 					},
 					"response": []
 				}
@@ -264,7 +378,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Thể thao\"\n}",
+							"raw": "{\n    \"name\": \"Nhảy múa\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -292,7 +406,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/tags/2",
+							"raw": "http://localhost:3000/api/tags/5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -301,7 +415,7 @@
 							"path": [
 								"api",
 								"tags",
-								"2"
+								"5"
 							]
 						}
 					},
@@ -310,9 +424,30 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
-						"url": null
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Hình sự\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/tags/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"tags",
+								"6"
+							]
+						}
 					},
 					"response": []
 				}
@@ -326,6 +461,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permission\":6,\n    \"name\":\"ADMINISTRATOR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/roles",
 							"protocol": "http",
@@ -346,45 +490,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/roles/3",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"roles",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get all role",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "update role",
-					"request": {
-						"method": "PUT",
-						"header": [],
 						"url": {
 							"raw": "http://localhost:3000/api/roles/1",
 							"protocol": "http",
@@ -396,6 +501,174 @@
 								"api",
 								"roles",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/roles/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"roles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update role",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": [\n        {\n            \"id\": 6\n        },\n        {\n            \"id\": 7\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/roles/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"roles",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update role for user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/roles?userId=27&roleId=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"roles"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "27"
+								},
+								{
+									"key": "roleId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/dongnq/Downloads/IMG_2714.JPG"
+								},
+								{
+									"key": "name",
+									"value": "thể thao",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "postId",
+									"value": "187",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/images",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/images/IMG_2714-f5a1.JPG",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"images",
+								"IMG_2714-f5a1.JPG"
 							]
 						}
 					},
