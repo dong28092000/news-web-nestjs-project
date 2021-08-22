@@ -3,6 +3,7 @@ axios.defaults.withCredentials = true;
 const post = document.getElementsByClassName("form-control");
 
 function getData() {
+  document.getElementById("button--save").style.display = "none";
   axios
     .get("/posts")
     .then(function (response) {

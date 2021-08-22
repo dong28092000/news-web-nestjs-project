@@ -13,5 +13,5 @@ export interface TokenPayload {
 }
 
 export interface ForgotPasswordResponse {
-    url: string;
+    encryptData: string;
   }

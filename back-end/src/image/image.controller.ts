@@ -11,8 +11,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { ApiFile } from '../common/decorator';
 import { UploadImageDto } from './dto/upload-image.dto';
 import { Image } from './image.entity';
 import { ImageService } from './image.service';
@@ -27,11 +29,14 @@ export const editFileName = (req, file, callback) => {
   callback(null, `${name}-${randomName}${fileExtName}`);
 };
 
+@ApiTags('images')
 @Controller('images')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @ApiFile('image', 'postId')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -49,7 +54,7 @@ export class ImageController {
   }
 
   @Get(':imgPath')
-  async seeUploadedFile(@Param('imgPath') image, @Res() res) {
+  async seeUploadedFile(@Param('imgPath') image: string, @Res() res) {
     const isImageExit = await this.imageService.getByFileNanme(image);
     if (!isImageExit) {
       throw new NotFoundException('this image does not exit!');
@@ -57,3 +62,6 @@ export class ImageController {
     return res.sendFile(image, { root: './src/image/image-upload' });
   }
 }
+
+
+

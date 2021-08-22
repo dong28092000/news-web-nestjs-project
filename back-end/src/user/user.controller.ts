@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { ClassSerializerInterceptor, Controller, Get, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { PermissionGuard } from "../authentication/permission.guard";
 import { VIEW_USER } from "../common/constant";
 import { Permission } from "../common/decorator";
@@ -6,7 +6,7 @@ import { JwtAuthenticationGuard } from "../authentication/jwt.guard";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
 
-
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('profile')
 @UseGuards(JwtAuthenticationGuard)
 export class UserController {

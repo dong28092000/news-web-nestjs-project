@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, Res } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Res, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import {
   ForgotPasswordResponse,
   RegisterResponse,
@@ -32,7 +32,7 @@ export class AuthenticationController {
     return this.authenticationService.register(body);
   }
 
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
   @ApiBody({ type: LoginRequest })

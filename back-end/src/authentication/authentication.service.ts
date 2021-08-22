@@ -48,7 +48,7 @@ export class AuthenticationService {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     });
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}`;
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}; SameSite=None; Secure`;
   }
 
   public getCookieWithJwtRefreshToken(userId: number) {
@@ -57,7 +57,7 @@ export class AuthenticationService {
       secret: process.env.JWT_REFRESH_TOKEN_SECRET,
       expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     });
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`;
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}; SameSite=None; Secure`;
     return {
       cookie,
       token,
@@ -96,15 +96,14 @@ export class AuthenticationService {
       await this.otpService.createForgotPasswordToken();
     const data = `${email}-${forgotPasswordToken}`;
     const encryptData = this.encryptionService.encryptAES(data);
-    const url = `${process.env.FRONT_END_URL}/verify-forgot-password/?token=${encryptData}`;
     const parameterEmails = {
       to: [email.toLowerCase()],
       subject: `Request reset password`,
-      html: `<a href="${url}">Click here</a> for reset password`,
+      html: `<a>Token: "${encryptData}"</a> for reset password`,
     };
     await this.emailService.sendEmail(parameterEmails);
 
-    return { url };
+    return { encryptData };
   }
 
   async verifyForgotPassword(body: ResetPasswordRequest): Promise<boolean> {
