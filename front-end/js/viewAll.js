@@ -15,19 +15,17 @@ function getData() {
 }
 getData();
 
-
-
-
 function appendData(posts) {
   const tbody = document.getElementById("tbody");
   tbody.innerHTML = "";
-  posts.map(
-    (post, index) => {
-      return (tbody.innerHTML += `
+  posts.map((post, index) => {
+    return (tbody.innerHTML += `
         <tr key=${index}>
             
             <th scope="row">${post.id}</th>
-            <td><img src=${post.images[0]?.url} width="100" height="100"></img></td>
+            <td><img src=${
+              post?.imageUrl
+            } width="100" height="100"></img></td>
             <td>${loadTags(post.tags)}</td> 
             <td>${post?.title}</td>
             <td>${post?.content}</td>
@@ -47,15 +45,14 @@ function appendData(posts) {
     <button  class="btn btn-primary mb-3" onclick="handleComment(${
       post.id
     })">Comment</button>
-        `)}
-  );
+        `);
+  });
 }
 
-
-
 const handleCreatePost = () => {
-  const title = post[1].value;
-  const content = post[2].value;
+  let formData = new FormData();
+  formData.append("title", post[1].value);
+  formData.append("content", post[2].value);
   const tagId = handleTag();
 
   if (!title.trim() || !content.trim()) {
@@ -64,9 +61,10 @@ const handleCreatePost = () => {
   }
 
   axios
-    .post(`/posts?tagId=${tagId}`, {
-      title: title,
-      content: content,
+    .post(`/posts?tagId=${tagId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
     .then(function (response) {
       handleImage(response.data.id);
@@ -90,7 +88,7 @@ function handleEdit(id) {
       document.getElementById("content").innerHTML = post.content;
     })
     .catch((err) => alert(err));
-  postId=id;
+  postId = id;
 }
 
 function handleSave() {
@@ -147,23 +145,6 @@ function handleComment(id) {
     .catch((err) => alert(err));
 }
 
-function handleImage(id) {
-  const imagefile = document.querySelector("#image").files[0];
-  let formData = new FormData();
-  formData.append("image", imagefile);
-  formData.append("postId", id);
-  axios
-    .post(`/images`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-      getData();
-    })
-    .catch((err) => alert(err));
-  event.preventDefault();
-}
 
 function handleComments(comments) {
   const item = comments.map((comment) => `<li>${comment.content}</li>`);
@@ -182,4 +163,3 @@ function loadTags(tags) {
   </ul>
   `;
 }
-

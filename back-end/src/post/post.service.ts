@@ -2,19 +2,17 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Post,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { SearchPostDto } from './dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Posts } from './post.entity';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { TagService } from '../tag/tag.service';
-import { getConnection } from 'typeorm';
-import { Comment } from '../comment/comment.entity';
+
 
 @Injectable()
 export class PostService {
@@ -28,11 +26,13 @@ export class PostService {
     user: User,
     body: CreatePostDto,
     tagId,
+    file
   ): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
     post.userId = user.id;
     const tag = await this.tagService.getOne({ id: tagId });
     post.tags = [tag];
+    post.imageUrl = `http://localhost:3000/images/${file.filename}`;
     await this.postRepository.save(post);
     return {
       id: post.id,
@@ -42,13 +42,13 @@ export class PostService {
 
   findOne(
     id,
-    options = { relations: ['comments', 'user', 'tags', 'images'] },
+    options = { relations: ['comments', 'user', 'tags'] },
   ): Promise<Posts> {
     return this.postRepository.findOne(id, options);
   }
 
   findAllPosts(
-    options = { relations: ['comments', 'user', 'tags', 'images'] },
+    options = { relations: ['comments', 'user', 'tags'] },
   ): Promise<Posts[]> {
     return this.postRepository.find(options);
   }

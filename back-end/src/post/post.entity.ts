@@ -10,7 +10,6 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Comment } from '../comment/comment.entity';
-import { Image } from '../image/image.entity';
 
 @Entity()
 export class Posts {
@@ -26,15 +25,13 @@ export class Posts {
   @Column({ default: null })
   userId: number;
 
+  @Column()
+  imageUrl: string;
+
   @OneToMany(() => Comment, (comment: Comment) => comment.post, {
     cascade: true
   })
   comments: Comment[];
-
-  @OneToMany(() => Image, (image: Image) => image.post, {
-    cascade: true,
-  })
-  images: Image[];
 
   @ManyToOne(() => User, (user: User) => user.posts)
   user: User;
