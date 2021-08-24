@@ -7,13 +7,22 @@ import { CommentModule } from '../comment/comment.module';
 import { TagModule } from '../tag/tag.module';
 import { TagService } from '../tag/tag.service';
 import { Tag } from '../tag/tag.entity';
-import { CommentService } from '../comment/comment.service';
+import { MulterModule } from '@nestjs/platform-express';
+import { imageFilter } from '../filter/image-filter';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Posts, Tag]), CommentModule, TagModule],
-    controllers: [PostController],
-    providers: [PostService, TagService],
-    exports: [PostService],
+  imports: [
+    TypeOrmModule.forFeature([Posts, Tag]),
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        fileFilter: imageFilter,
+      }),
+    }),
+    CommentModule,
+    TagModule,
+  ],
+  controllers: [PostController],
+  providers: [PostService, TagService],
+  exports: [PostService],
 })
-export class PostModule {};
-     
+export class PostModule {}

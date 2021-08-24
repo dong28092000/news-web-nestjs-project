@@ -16,21 +16,24 @@ import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { Permission } from './permission/permission.entity';
 import { Role } from './role/role.entity';
-import { ImageModule } from './image/image.module';
-import { Image } from './image/image.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      entities: [User, Posts, Comment, Tag, Role, Permission, Image],
+      entities: [User, Posts, Comment, Tag, Role, Permission],
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME || '',
       password: process.env.DATABASE_PASSWORD || '',
       database: process.env.DATABASE_NAME,
       synchronize: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname,'..','public'),
     }),
     UserModule,
     AuthenticationModule,
@@ -39,9 +42,9 @@ import { Image } from './image/image.entity';
     TagModule,
     RoleModule,
     PermissionModule,
-    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {} 
+export class AppModule {}
+ 

@@ -4,13 +4,13 @@ import {
   Body,
   Get,
   Param,
-  NotFoundException,
   Patch,
   Query,
   UseGuards,
   Req,
-  BadRequestException,
   Delete,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { PostService } from './post.service';
@@ -18,10 +18,20 @@ import { Posts } from './post.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreatePostDto, UpdatePostDto, SearchPostDto } from './dto';
 import { JwtAuthenticationGuard } from '../authentication/jwt.guard';
-import {
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+
+export const editFileName = (req, file, callback) => {
+  const name = file.originalname.split('.')[0];
+  const fileExtName = extname(file.originalname);
+  const randomName = Array(4)
+    .fill(null)
+    .map(() => Math.round(Math.random() * 16).toString(16))
+    .join('');
+  callback(null, `${name}-${randomName}${fileExtName}`);
+};
 
 @ApiTags('posts')
 @Controller('posts')
@@ -29,46 +39,56 @@ import {
 export class PostController {
   constructor(private readonly postService: PostService) {}
   @Post()
-  @ApiQuery({name: 'tagId'})
-  async createPost(
-    @Req() { user },
-    @Body() body: CreatePostDto,
-    @Query('tagId') tagId
-  ): Promise<CreatePostResponse> {
-    return this.postService.createPost(user, body, tagId);
-  }
+      @ApiConsumes('multipart/form-data')
+      @ApiQuery({ name: 'tagId' })
+      @ApiOperation({summary: 'image'})
+      @UseInterceptors(
+        FileInterceptor('image', {
+          storage: diskStorage({
+            destination: 'public/images',
+            filename: editFileName,
+          }),
+        }),
+     )  
+      async createPost(
+        @Req() { user },
+        @Body() body: CreatePostDto,
+        @Query('tagId') tagId,
+        @UploadedFile() file: Express.Multer.File,
+      ): Promise<CreatePostResponse> {
+        return this.postService.createPost(user, body, tagId, file);
+      }
 
   @Get(':id')
-  async viewDetail(@Param('id') id: string): Promise<Posts> {
-    return this.postService.findOne(id);
-  }
+      async viewDetail(@Param('id') id: string): Promise<Posts> {
+        return this.postService.findOne(id);
+      }
 
   @Get()
-  async getAll(): Promise<Posts[]> {
-    return this.postService.findAllPosts();
-  }
-
+      async getAll(): Promise<Posts[]> {
+        return this.postService.findAllPosts();
+      }
 
   @Patch(':id')
-  @ApiQuery({name: 'tagId'})
-  async editPosts(
-    @Param('id') id: string,
-    @Body() body: UpdatePostDto,
-    @Query('tagId') tagId,
-  ): Promise<Posts>{
-    return this.postService.updatePost(id, body, tagId);
-  }
+      @ApiQuery({ name: 'tagId' })
+      async editPosts(
+        @Param('id') id: string,
+        @Body() body: UpdatePostDto,
+        @Query('tagId') tagId,
+      ): Promise<Posts> {
+        return this.postService.updatePost(id, body, tagId);
+      }
 
   @Get()
-  @ApiQuery({name: 'title'})
-  async seachPost(
-    @Query('title') searchPost: SearchPostDto,
-  ): Promise<SearchPostResponse> {
-    return this.postService.searchPost(searchPost);
-  }
+      @ApiQuery({ name: 'title' })
+      async seachPost(
+        @Query('title') searchPost: SearchPostDto,
+      ): Promise<SearchPostResponse> {
+        return this.postService.searchPost(searchPost);
+      }
 
-  @Delete(':id')
-  async deletePost(@Param('id') id: string): Promise<DeleteResult> {
-    return this.postService.delete(id);
-  }
+      @Delete(':id')
+      async deletePost(@Param('id') id: string): Promise<DeleteResult> {
+        return this.postService.delete(id);
+      }
 }
