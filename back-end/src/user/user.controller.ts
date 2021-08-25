@@ -1,7 +1,7 @@
 import { ClassSerializerInterceptor, Controller, Get, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { PermissionGuard } from "../authentication/permission.guard";
 import { VIEW_USER } from "../common/constant";
-import { Permission } from "../common/decorator";
+import { Permission, UserDecorator } from "../common/decorator";
 import { JwtAuthenticationGuard } from "../authentication/jwt.guard";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
@@ -15,10 +15,10 @@ export class UserController {
     ){}
     
     @Get()
-    @Permission(VIEW_USER)
-    @UseGuards(PermissionGuard)
-    async getProfile(@Req() { user }): Promise<User> {
-        return this.userService.findOneOrFail(user.id);
-    }
+        @Permission(VIEW_USER)
+        @UseGuards(PermissionGuard)
+        async getProfile(@UserDecorator()  user ): Promise<User> {
+            return this.userService.findOneOrFail(user.id);
+        }
 
 }

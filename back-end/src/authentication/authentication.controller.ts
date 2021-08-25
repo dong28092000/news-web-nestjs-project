@@ -27,50 +27,51 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('register')
-  @ApiCreatedResponse({description: 'success!'})
-  registerManager(@Body() body: RegisterRequest): Promise<RegisterResponse> {
-    return this.authenticationService.register(body);
-  }
+      @ApiCreatedResponse({description: 'success!'})
+      registerManager(@Body() body: RegisterRequest): Promise<RegisterResponse> {
+        return this.authenticationService.register(body);
+      }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(LocalAuthenticationGuard)
+  
   @Post('login')
-  @ApiBody({ type: LoginRequest })
-  @ApiOkResponse({description: 'success!'})
-  async loginManager(@Req() request) {
-    const { user } = request;
-    const accessTokenCookies =
-      this.authenticationService.getCookiesWithJwtAccessToken(user.id);
+      @UseInterceptors(ClassSerializerInterceptor)
+      @UseGuards(LocalAuthenticationGuard)
+      @ApiBody({ type: LoginRequest })
+      @ApiOkResponse({description: 'success!'})
+      async loginManager(@Req() request) {
+        const { user } = request;
+        const accessTokenCookies =
+          this.authenticationService.getCookiesWithJwtAccessToken(user.id);
 
-    const refreshTokenCookies =
-      this.authenticationService.getCookieWithJwtRefreshToken(user.id);
+        const refreshTokenCookies =
+          this.authenticationService.getCookieWithJwtRefreshToken(user.id);
 
-    await this.authenticationService.setCurrentRefreshToken(
-      refreshTokenCookies.token,
-      user.id,
-    );
+        await this.authenticationService.setCurrentRefreshToken(
+          refreshTokenCookies.token,
+          user.id,
+        );
 
-    request.res.setHeader('Set-Cookie', [
-      accessTokenCookies,
-      refreshTokenCookies.cookie,
-    ]);
-    return user;
-  }
+        request.res.setHeader('Set-Cookie', [
+          accessTokenCookies,
+          refreshTokenCookies.cookie,
+        ]);
+        return user;
+      }
 
   @Post('forgot-password')
-  @ApiOkResponse({description: 'success!'})
-  forgotPasswordManager(
-    @Body() body: ForgotPasswordRequest,
-  ): Promise<ForgotPasswordResponse> {
-    return this.authenticationService.forgotPassword(body);
-  }
+      @ApiOkResponse({description: 'success!'})
+      forgotPasswordManager(
+        @Body() body: ForgotPasswordRequest,
+      ): Promise<ForgotPasswordResponse> {
+        return this.authenticationService.forgotPassword(body);
+      }
 
   @Post('verify-forgot-password')
-  verifyForgotPasswordManager(
-    @Body() body: ResetPasswordRequest,
-  ): Promise<boolean> {
-    return this.authenticationService.verifyForgotPassword(body);
-  }
+      verifyForgotPasswordManager(
+        @Body() body: ResetPasswordRequest,
+      ): Promise<boolean> {
+        return this.authenticationService.verifyForgotPassword(body);
+      }
 }
 
 

@@ -21,23 +21,17 @@ import { JwtAuthenticationGuard } from '../authentication/jwt.guard';
 import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { UserDecorator } from '../common/decorator';
+import { editFileName } from '../common/services/edit-file-name.service';
 
-export const editFileName = (req, file, callback) => {
-  const name = file.originalname.split('.')[0];
-  const fileExtName = extname(file.originalname);
-  const randomName = Array(4)
-    .fill(null)
-    .map(() => Math.round(Math.random() * 16).toString(16))
-    .join('');
-  callback(null, `${name}-${randomName}${fileExtName}`);
-};
+
 
 @ApiTags('posts')
 @Controller('posts')
 @UseGuards(JwtAuthenticationGuard)
 export class PostController {
   constructor(private readonly postService: PostService) {}
+  
   @Post()
       @ApiConsumes('multipart/form-data')
       @ApiQuery({ name: 'tagId' })
@@ -51,10 +45,10 @@ export class PostController {
         }),
      )  
       async createPost(
-        @Req() { user },
-        @Body() body: CreatePostDto,
-        @Query('tagId') tagId,
-        @UploadedFile() file: Express.Multer.File,
+      @UserDecorator() user ,
+      @Body() body: CreatePostDto,
+      @Query('tagId') tagId,
+      @UploadedFile() file: Express.Multer.File,
       ): Promise<CreatePostResponse> {
         return this.postService.createPost(user, body, tagId, file);
       }

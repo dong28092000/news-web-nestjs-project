@@ -4,7 +4,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { Comment } from "./comment.entity";
 import { JwtAuthenticationGuard } from "../authentication/jwt.guard";
 import { DeleteResult } from "typeorm";
-import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 
 
 @ApiTags('comments')
@@ -16,13 +16,13 @@ export class CommentController {
     ){}
     
     @Post()
-    async createComment( @Body() comment: CreateCommentDto): Promise<Comment> {
-        return this.commentService.create(comment);
-    }
+        async createComment( @Body() comment: CreateCommentDto): Promise<Comment> {
+            return this.commentService.create(comment);
+        }
 
     @Delete(':id')
-    async deleteComment(@Param('id') id: number): Promise<DeleteResult> {
-        return this.commentService.delete(id); 
-    }
+        async deleteComment(@Param('id') id: number): Promise<DeleteResult> {
+            return this.commentService.delete(id); 
+        }
 
 }
