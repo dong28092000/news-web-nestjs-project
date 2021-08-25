@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from 'src/user/user.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { PassportModule } from '@nestjs/passport';
@@ -18,7 +17,6 @@ import { EncryptionModule } from '../common/services/encryption.module';
         expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
       },
     }),
-    UserModule,
     PassportModule,
     EmailModule,
     OtpModule,

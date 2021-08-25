@@ -50,15 +50,12 @@ function appendData(posts) {
 }
 
 const handleCreatePost = () => {
+  const imagefile = document.querySelector("#image").files[0];
   let formData = new FormData();
+  formData.append("image", imagefile)
   formData.append("title", post[1].value);
   formData.append("content", post[2].value);
   const tagId = handleTag();
-
-  if (!title.trim() || !content.trim()) {
-    alert("title | content not be blank");
-    return;
-  }
 
   axios
     .post(`/posts?tagId=${tagId}`, formData, {
@@ -67,7 +64,7 @@ const handleCreatePost = () => {
       },
     })
     .then(function (response) {
-      handleImage(response.data.id);
+      console.log(response.data);
     })
     .catch(function (error) {
       console.log(error);

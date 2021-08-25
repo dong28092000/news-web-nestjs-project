@@ -16,17 +16,17 @@ export class TagController {
     ){}
 
     @Post()
-    async createTag(@Body() tag: CreateTagDto): Promise<Tag> {
-        return this.tagService.create(tag);
-    }
+        async createTag(@Body() tag: CreateTagDto): Promise<Tag> {
+            return this.tagService.create(tag);
+        }
 
     @Delete(':id')
-    async deleteTag(@Param('id') id: number): Promise<DeleteResult> {
-        return this.tagService.delete(id);
-    }
+        async deleteTag(@Param('id') id: number): Promise<DeleteResult> {
+            return this.tagService.delete(id);
+        }
 
     @Patch(':id')
-    async updateTag(@Param('id') id: string, @Body() body: UpdateTagDto): Promise<UpdateResult> {
-        return this.tagService.update(id, body);
-    }
+        async updateTag(@Param('id') id: string, @Body() body: UpdateTagDto): Promise<UpdateResult> {
+            return this.tagService.update(id, body);
+        }
 }
