@@ -18,6 +18,7 @@ import { Permission } from './permission/permission.entity';
 import { Role } from './role/role.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -34,6 +35,13 @@ import { join } from 'path';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname,'..','public'),
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+        password: '28092000'
+      },
     }),
     UserModule,
     AuthenticationModule,

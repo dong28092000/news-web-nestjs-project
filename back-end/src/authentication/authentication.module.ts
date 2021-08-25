@@ -8,6 +8,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { EmailModule } from '../common/services/email.module';
 import { OtpModule } from '../common/services/otp.module';
 import { EncryptionModule } from '../common/services/encryption.module';
+import { BullModule } from '@nestjs/bull';
+import { MessageQueueModule } from '../common/services/message-queue.module';
 
 @Module({
   imports: [
@@ -17,10 +19,14 @@ import { EncryptionModule } from '../common/services/encryption.module';
         expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
       },
     }),
+    BullModule.registerQueue({
+      name: 'message-queue',
+    }),
     PassportModule,
     EmailModule,
     OtpModule,
-    EncryptionModule
+    EncryptionModule,
+    MessageQueueModule,
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, LocalStrategy, JwtStrategy],
