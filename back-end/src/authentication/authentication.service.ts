@@ -10,11 +10,12 @@ import {
   ForgotPasswordResponse,
 } from './authentication.interface';
 import * as bcrypt from 'bcrypt';
-import { LoginRequest, RegisterRequest, ResetPasswordRequest } from './dto';
+import { RegisterRequest, ResetPasswordRequest } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { OtpService } from '../common/services/otp.service';
 import { EncryptionService } from '../common/services/encryption.service';
 import { EmailService } from '../common/services/email.service';
+import { MessageQueueService } from '../common/services/message-queue.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -24,6 +25,7 @@ export class AuthenticationService {
     private readonly otpService: OtpService,
     private readonly encryptionService: EncryptionService,
     private readonly emailService: EmailService,
+    private readonly messageQueue: MessageQueueService,
   ) {}
 
   async register(body: RegisterRequest): Promise<RegisterResponse> {
@@ -36,6 +38,12 @@ export class AuthenticationService {
       ...body,
       password: hashedPass,
     });
+    const parameterEmails = {
+      to: [`${createdUser.email.toLowerCase()}`],
+      subject: `Congratulations!`,
+      html: `You are register successfully !`,
+    };
+    this.messageQueue.sendConfirmationEmail(parameterEmails);
     return {
       id: createdUser.id,
       message: 'success',
@@ -48,7 +56,7 @@ export class AuthenticationService {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     });
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}`;
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}; SameSite=None; Secure`;
   }
 
   public getCookieWithJwtRefreshToken(userId: number) {
@@ -57,7 +65,7 @@ export class AuthenticationService {
       secret: process.env.JWT_REFRESH_TOKEN_SECRET,
       expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     });
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`;
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}; SameSite=None; Secure `;
     return {
       cookie,
       token,
@@ -101,7 +109,7 @@ export class AuthenticationService {
       subject: `Request reset password`,
       html: `<a>Token: "${encryptData}"</a> for reset password`,
     };
-    await this.emailService.sendEmail(parameterEmails);
+    this.messageQueue.sendConfirmationEmail(parameterEmails);
 
     return { encryptData };
   }
