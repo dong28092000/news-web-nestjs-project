@@ -15,7 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { OtpService } from '../common/services/otp.service';
 import { EncryptionService } from '../common/services/encryption.service';
 import { EmailService } from '../common/services/email.service';
-import { MessageQueueService } from '../common/services/message-queue.service';
+import { MessageQueueService } from '../common/services/queue/mail.service';
 
 @Injectable()
 export class AuthenticationService {

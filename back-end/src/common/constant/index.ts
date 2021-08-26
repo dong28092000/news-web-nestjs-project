@@ -1,4 +1,5 @@
-export const DEFAULT_ROLE_ID = 1;
+export const USER = 1;
+export const ADMIN = 2;
 
 export const VIEW_USER = 1;
 export const CREATE_USER = 2;

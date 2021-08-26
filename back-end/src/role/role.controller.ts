@@ -16,14 +16,16 @@ import { RoleService } from './role.service';
 import { Role } from './role.entity';
 import { RoleCreateDto, RoleUpdateDto } from './dto/index';
 import { DeleteResult } from 'typeorm';
-import { Permission } from '../common/decorator';
-import { CREATE_ROLE, UPDATE_ROLE, DELETE_ROLE } from '../common/constant';
-import { PermissionGuard } from '../authentication/permission.guard';
+import { Permission, Roles } from '../common/decorator';
+import { CREATE_ROLE, UPDATE_ROLE, DELETE_ROLE, ADMIN } from '../common/constant';
 import { UserService } from '../user/user.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from '../authentication/role.guard';
 
 
 @ApiTags('roles')
+@Roles(ADMIN)
+@UseGuards(RolesGuard)
 @Controller('roles')
 @UseGuards(JwtAuthenticationGuard)
 export class RoleController {
@@ -42,15 +44,12 @@ export class RoleController {
       }
 
   @Post()
-      @Permission(CREATE_ROLE)
-      @UseGuards(PermissionGuard)
       async createRole(@Body() roleCreate: RoleCreateDto): Promise<Role> {
+        console.log('sdfsad');
         return this.roleService.createRole(roleCreate);
       }
 
   @Patch(':id')
-      @Permission(UPDATE_ROLE)
-      @UseGuards(PermissionGuard)
       async updateRole(
         @Param('id') id: string,
         @Body() roleUpdate: RoleUpdateDto,
@@ -64,8 +63,6 @@ export class RoleController {
       }
 
   @Patch()
-      @Permission(UPDATE_ROLE)
-      @UseGuards(PermissionGuard)
       @ApiQuery({ name: 'userId'})
       @ApiQuery({ name: 'roleId'})
       async updateRoleForUser(@Query('userId') userId, @Query('roleId') roleId) {
@@ -93,8 +90,6 @@ export class RoleController {
       }
 
   @Delete(':id')
-      @Permission(DELETE_ROLE)
-      @UseGuards(PermissionGuard)
       deleteRole(@Param('id') id: string): Promise<DeleteResult> {
         return this.roleService.deleteRole(id);
       }

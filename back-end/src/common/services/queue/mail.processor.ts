@@ -1,8 +1,7 @@
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
-import { User } from "src/user/user.entity";
-import { EmailService } from "./email.service";
+import { EmailService } from "../email.service";
 
 
 @Processor('message-queue')
