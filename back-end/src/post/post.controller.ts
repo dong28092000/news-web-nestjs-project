@@ -7,7 +7,6 @@ import {
   Patch,
   Query,
   UseGuards,
-  Req,
   Delete,
   UploadedFile,
   UseInterceptors,

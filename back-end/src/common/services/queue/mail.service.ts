@@ -1,7 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
-import { User } from '../../user/user.entity';
+import { User } from '../../../user/user.entity';
 
 @Injectable()
 export class MessageQueueService {

@@ -9,7 +9,7 @@ import { EmailModule } from '../common/services/email.module';
 import { OtpModule } from '../common/services/otp.module';
 import { EncryptionModule } from '../common/services/encryption.module';
 import { BullModule } from '@nestjs/bull';
-import { MessageQueueModule } from '../common/services/message-queue.module';
+import { MessageQueueModule } from '../common/services/queue/queue.module';
 
 @Module({
   imports: [
