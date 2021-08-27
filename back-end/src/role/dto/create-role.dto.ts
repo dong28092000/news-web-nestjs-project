@@ -4,21 +4,21 @@ export class RoleCreateDto {
   @IsNotEmpty()
   @ApiProperty({
     type: Number,
-    default: 6
+    default: 6,
   })
   permission: number;
 
   @IsNotEmpty()
   @ApiProperty({
     type: String,
-    default: 'MANAGER'
+    default: 'MANAGER',
   })
   name: string;
 
   @IsOptional()
   @ApiProperty({
     type: String,
-    default: 'manage system'
+    default: 'manage system',
   })
   description: string;
 }

@@ -14,7 +14,6 @@ import { RegisterRequest, ResetPasswordRequest } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { OtpService } from '../common/services/otp.service';
 import { EncryptionService } from '../common/services/encryption.service';
-import { EmailService } from '../common/services/email.service';
 import { MessageQueueService } from '../common/services/queue/mail.service';
 
 @Injectable()
@@ -24,8 +23,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     private readonly otpService: OtpService,
     private readonly encryptionService: EncryptionService,
-    private readonly emailService: EmailService,
-    private readonly messageQueue: MessageQueueService,
+    private readonly messageQueueService: MessageQueueService,
   ) {}
 
   async register(body: RegisterRequest): Promise<RegisterResponse> {
@@ -43,7 +41,7 @@ export class AuthenticationService {
       subject: `Congratulations!`,
       html: `You are register successfully !`,
     };
-    this.messageQueue.sendConfirmationEmail(parameterEmails);
+    this.messageQueueService.sendConfirmationEmail(parameterEmails);
     return {
       id: createdUser.id,
       message: 'success',
@@ -109,7 +107,7 @@ export class AuthenticationService {
       subject: `Request reset password`,
       html: `<a>Token: "${encryptData}"</a> for reset password`,
     };
-    this.messageQueue.sendConfirmationEmail(parameterEmails);
+    this.messageQueueService.sendConfirmationEmail(parameterEmails);
 
     return { encryptData };
   }

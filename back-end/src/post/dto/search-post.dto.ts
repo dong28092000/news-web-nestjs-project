@@ -1,11 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class SearchPostDto {
-    @IsOptional()
-    @ApiProperty({
-        type: String,
-        default: 'Hello'
-    })
-    title: string;
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    default: 'Hello',
+  })
+  title: string;
 }

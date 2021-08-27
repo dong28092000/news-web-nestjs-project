@@ -6,7 +6,7 @@ export class ForgotPasswordRequest {
   @IsEmail()
   @ApiProperty({
     type: String,
-    default: 'nguyenquangdong28092000@gmail.com'
+    default: 'nguyenquangdong28092000@gmail.com',
   })
   email: string;
 }

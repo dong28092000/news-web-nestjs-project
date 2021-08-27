@@ -1,4 +1,4 @@
-import { authenticator, totp } from 'otplib';
+import { authenticator } from 'otplib';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

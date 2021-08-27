@@ -24,6 +24,7 @@ export class EmailService {
   }
 
   async sendEmail(parameters: EmailParams): Promise<any> {
+    console.log(parameters);
     const fields = {
       from: process.env.SMTP_FROM,
       to: [],

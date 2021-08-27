@@ -1,10 +1,10 @@
-import { Posts } from "./post.entity";
+import { Posts } from './post.entity';
 
 export interface CreatePostResponse {
-    id: number;
-    message: string;
+  id: number;
+  message: string;
 }
 
 export interface SearchPostResponse {
-    posts: Posts[];
+  posts: Posts[];
 }

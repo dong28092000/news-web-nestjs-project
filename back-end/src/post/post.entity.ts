@@ -29,7 +29,7 @@ export class Posts {
   imageUrl: string;
 
   @OneToMany(() => Comment, (comment: Comment) => comment.post, {
-    cascade: true
+    cascade: true,
   })
   comments: Comment[];
 

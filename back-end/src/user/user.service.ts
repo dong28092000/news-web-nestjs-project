@@ -60,11 +60,10 @@ export class UserService {
   }
 
   async deleteAccount(id): Promise<DeleteResult> {
-    const user = await this.userRepository.findOne(id)
+    const user = await this.userRepository.findOne(id);
     if (!user) {
       throw new NotFoundException('role does not exits');
     }
     return this.userRepository.delete(id);
   }
-
 }
