@@ -1,5 +1,5 @@
-import { Permission } from "./permission.decorator";
-import { Roles } from "./role.decorator";
-import { UserDecorator } from "./user.decorator";
+import { Permission } from './permission.decorator';
+import { Roles } from './role.decorator';
+import { UserDecorator } from './user.decorator';
 
-export { Permission, Roles, UserDecorator};
+export { Permission, Roles, UserDecorator };

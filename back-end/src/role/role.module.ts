@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EncryptionModule } from '../common/services/encryption.module';
 import { RoleService } from './role.service';

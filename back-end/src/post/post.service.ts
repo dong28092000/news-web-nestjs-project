@@ -13,7 +13,6 @@ import { Posts } from './post.entity';
 import { CreatePostResponse, SearchPostResponse } from './post.interface';
 import { TagService } from '../tag/tag.service';
 
-
 @Injectable()
 export class PostService {
   constructor(
@@ -26,7 +25,7 @@ export class PostService {
     user: User,
     body: CreatePostDto,
     tagId,
-    file
+    file,
   ): Promise<CreatePostResponse> {
     const post = await this.postRepository.create(body);
     post.userId = user.id;

@@ -365,6 +365,15 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "delete account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
 				}
 			]
 		},

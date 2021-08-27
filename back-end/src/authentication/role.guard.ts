@@ -21,9 +21,8 @@ export class RolesGuard implements CanActivate {
     const userInformation = await this.userService.findOneOrFail(user.id);
     let roleAssigned = [];
     userInformation.roles.forEach(
-      (role) =>
-        (roleAssigned = roleAssigned.concat(role.id)),       
+      (role) => (roleAssigned = roleAssigned.concat(role.id)),
     );
-    return  roleAssigned.some((id) => id === requiredRoles);
+    return roleAssigned.some((id) => id === requiredRoles);
   }
 }

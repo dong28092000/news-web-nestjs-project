@@ -4,14 +4,14 @@ export class RegisterRequest {
   @IsNotEmpty()
   @ApiProperty({
     type: String,
-    default: 'dong'
+    default: 'dong',
   })
   firstname: string;
 
   @IsNotEmpty()
   @ApiProperty({
     type: String,
-    default: 'nguyen'
+    default: 'nguyen',
   })
   lastname: string;
 
@@ -19,14 +19,14 @@ export class RegisterRequest {
   @IsEmail()
   @ApiProperty({
     type: String,
-    default: 'nguyenquangdong28092000@gmail.com'
+    default: 'nguyenquangdong28092000@gmail.com',
   })
   email: string;
 
   @IsNotEmpty()
   @ApiProperty({
     type: String,
-    default: '123456'
+    default: '123456',
   })
   password: string;
 }

@@ -6,14 +6,14 @@ export class LoginRequest {
   @IsEmail()
   @ApiProperty({
     type: String,
-    default: 'nguyenquangdong28092000@gmail.com'
+    default: 'nguyenquangdong28092000@gmail.com',
   })
   email: string;
 
   @IsNotEmpty()
   @ApiProperty({
     type: String,
-    default: '123456'
+    default: '123456',
   })
   password: string;
 }
